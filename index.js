@@ -1,21 +1,20 @@
 //Importes
 import dictCountries from "./dictionary.js";
+import vars from "./variables.js";
 
-//Selectores
-const result = document.querySelector("#sectionResult");
-const optGroupIdioma = document.querySelector("#selFilterData #lang");
-const optGroupContinente = document.querySelector("#selFilterData #continent");
-const optGroupCurrencies = document.querySelector("#selFilterData #currency");
+const {
+  result,
+  optGroupIdioma,
+  optGroupContinente,
+  optGroupCurrencies,
+  selectOrder,
+  selectResults,
+  inpSearch,
+  URL_PATH,
+  storage
+} = vars;
 
-const selectOrder = document.querySelector("#selFilterOrder");
-const selectResults = document.querySelector("#selFilterResults");
-
-const inpSearch = document.querySelector("#searchSection");
-
-const URL_PATH = "https://restcountries.com/v2/";
-
-//Variable para utilizar API de localStorage
-const storage = window.localStorage;
+let resul = [];
 
 //Objeto que gestionará la petición en turno y su respuesta.
 const objRequest = {
@@ -23,30 +22,21 @@ const objRequest = {
   res: undefined
 };
 
-/*Gestión de eventos en torno al ciclo de vida del navegador
-if (document.readyState === "loading") {
-  objRequest.req = getURL();
-  downloadData(objRequest.req);
-}*/
-
 //IIFE que ejecutará la descarga de los datos.
 (() => {
-
-  if(!storage.getItem('lang') && !storage.getItem('currency') && !storage.getItem('continent')){    
+  if (!storage.getItem("lang") && !storage.getItem("currency") && !storage.getItem("continent")) {
     objRequest.req = getURL();
-    console.log("Bajando data del server...")
+    console.log("Bajando data del server...");
     downloadData(objRequest.req);
   } else {
     console.log("Extrayendo data de storage");
-    [...document.querySelectorAll('optgroup')].map(opt => {
-      fillSelectGroups(JSON.parse(storage.getItem(opt.id)), opt)      
-    })
+    [...document.querySelectorAll("optgroup")].map(opt => {
+      fillSelectGroups(JSON.parse(storage.getItem(opt.id)), opt);
+    });
   }
-
 })();
 
 document.addEventListener("DOMContentLoaded", e => {
-
   document.addEventListener("change", e => {
     if (e.target.id === "selFilterData") {
       getURL(e.target.options[e.target.selectedIndex].parentNode.id, e.target.value);
@@ -68,14 +58,15 @@ document.addEventListener("DOMContentLoaded", e => {
       } else {
         makeCallAPI(objRequest.req);
         setTimeout(() => {
-          getResults(objRequest.res);
+          getBorders(objRequest.res);
         }, 2000);
       }
     }
   });
 
   document.addEventListener("click", e => {
-    if (e.target.id === "btnSearch") {} else if (e.target.id === "btnSearchInd") {
+    if (e.target.id === "btnSearch") {} 
+    else if (e.target.id === "btnSearchInd") {
       const term = dictCountries[inpSearch.value.replace(" ", "_")];
 
       delete objRequest.order;
@@ -94,12 +85,6 @@ function makeCallAPI(url) {
 function getURL(id = "all", value = "") {
   return URL_PATH.concat(id).concat(`/${value}`);
 }
-
-/*const endPoints = [
-  "https://restcountries.com/v2/lang/es",
-  "https://restcountries.com/v2/continent/europe",
-  "https://restcountries.com/v2/all/"
-];*/
 
 //Descarga y transformación de la data obtenida
 function downloadData(url) {
@@ -171,58 +156,92 @@ function fillSelectGroups(data, select) {
 
   select.appendChild(fragment);
   objRequest.res = undefined;
-  
+
   storeData(select, [...select.children]);
 }
 
-function storeData(selector, arrElements){  
-  const arrayToStore = arrElements.map( option => [option.value, option.text]);
+function storeData(selector, arrElements) {
+  const arrayToStore = arrElements.map(option => [option.value, option.text]);
 
   storage.setItem(selector.id, JSON.stringify(arrayToStore));
 }
 
-function getResults(obj) {
-  clearResult();
-  obj.forEach(country => {
-    const {
-      name,
-      area,
-      borders,
-      capital,
-      currencies,
-      demonym,
-      flag,
-      languages,
-      latlng,
-      population,
-      region,
-      subregion
-    } = country;
-
-    result.innerHTML += `
-    <div class="bg-white m-2">
-      <img src="${flag}" alt="Bandera de ${name}" width="320" height="200"/>
-      <div class="p-2">
-        <p class="text-2xl overflow-visible">${name}</p>
-        <p><strong>Capital:</strong> ${capital}</p>
-        <p><strong>Area:</strong> ${area}</p>
-        <p><strong>Population:</strong> ${population}</p>      
-        <p><strong>Continent:</strong> ${region}</p>
-        <p><strong>Borders:</strong> ${borders.join(", ")}</p>
-        <p><strong>Monedas:</strong> ${currencies.name} (${currencies.symbol})</p>                  
-      </div>
-    </div>
-    `;
-
-    console.log({borders, currencies, demonym, languages, latlng, subregion});
-    
+function getBorders(obj) {
+  resul = [];
+  obj.forEach(result => {    
+    let {borders} = result;
+    if (borders) {
+      fetchBorders(borders, result);
+    } else {
+      paintHTML(obj);
+    }
   });
-
-  inpSearch.value = "";
 }
 
-function clearResult(){
-  while(result.firstChild){
+function fetchBorders(fronteras, country) {  
+  console.log({fronteras, country})
+
+  fronteras = fronteras.map(border => fetch(`https:restcountries.com/v2/alpha/${border}`));
+
+  Promise.all(fronteras)
+    .then(result => result.forEach((promise, index) => promise.json()
+      .then(country => {
+        fronteras[index] = country.name
+      })
+    ),
+      country.borders = fronteras,
+      resul.push(country)
+    );
+
+    setTimeout(() => {
+      paintHTML(resul)
+    }, 1500);
+}
+
+function paintHTML(res) {
+  clearResult();
+  res.forEach(country => {
+    const {
+      capital,
+      borders,
+      languages,
+      name,
+      population,
+      region,
+      area,
+      flags: {
+        png
+      }
+    } = country;  
+
+    let fronteras = borders ? borders.join(", ") : "Sin fronteras";
+
+    const card = document.createElement("div");
+    card.classList.add("w-80", "mt-2", "ml-2", "rounded-lg", "bg-white");
+    card.innerHTML += `
+      <img src="${png}" width="320" height="213" alt="Bandera de ${name}">
+      <div class="pl-2">
+        <p class="text-xl pt-2"><strong>${name}</strong></p>
+        <p><strong>Capital: </strong>${capital}</p>
+        <p><strong>Área: </strong>${area}</p>
+        <p><strong>Población: </strong>${population}</p>
+        <p><strong>Región: </strong>${region}</p>
+        <p><strong>Fronteras: </strong>${fronteras}</p>
+        <p>
+          <strong>Idiomas: </strong>
+          ${languages.map(lang => lang.nativeName).join(", ")}
+        </p>
+      </div>
+      
+    `;
+
+    result.appendChild(card);
+  });
+
+}
+
+function clearResult() {
+  while (result.firstChild) {
     result.removeChild(result.firstChild);
   }
 }

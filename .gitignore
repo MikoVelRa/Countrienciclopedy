@@ -3,3 +3,4 @@ api.json
 package.json
 package-lock.json
 styles.css
+tailwind.config.js

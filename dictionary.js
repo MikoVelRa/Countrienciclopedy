@@ -51,7 +51,7 @@ const dictCountries = {
     Isla_de_Navidad: "Christmas Island",
     Islas_Cocos_o_Islas_Keeling: "Cocos (Keeling) Islands",
     Colombia: "Colombia",
-    Comoras: "Colombia",
+    Comoras: "Comoros", 
     Congo: "Congo",
     República_Democrática_del_Congo: "Congo (Democratic Republic of the)",
     Islas_Cook: "Cook Islands",
