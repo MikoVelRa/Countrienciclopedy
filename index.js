@@ -53,33 +53,56 @@ document.addEventListener("DOMContentLoaded", e => {
 
     for (let item of Object.values(inputs)) {
       if (!item.value) {
-        alert("Please, input all data");
+        alert("Please, input data");
         return;
-      } else {
-        makeCallAPI(objRequest.req);
-        setTimeout(() => {
-          getBorders(objRequest.res);
-        }, 2000);
-      }
+      } 
     }
   });
 
   document.addEventListener("click", e => {
     if (e.target.id === "btnSearch") {} 
     else if (e.target.id === "btnSearchInd") {
-      const term = dictCountries[inpSearch.value.replace(" ", "_")];
-
-      delete objRequest.order;
-      delete objRequest.results;
-
-      objRequest.req = getURL("name", term);
+        
     }
   });
+
+  document.addEventListener("input", searchCountry)
 });
+
+function searchCountry(e){
+  let countryTerm = e.target.value;
+  if(countryTerm){
+    countryTerm.replace(" ", "_");
+
+    const regExp = new RegExp(`^${countryTerm}`, "i");
+    const result = [...Object.keys(dictCountries)].filter(country => regExp.test(country))
+    
+    drawResults(result)
+
+    resultList.classList.remove("hidden");
+    resultList.classList.add("block");
+  } else {
+    resultList.classList.remove("block");
+    resultList.classList.add("hidden");
+  }
+}
+
+function drawResults(collection){
+  const divContainerReults = document.querySelector('#resultList');
+  clearResult(divContainerReults);
+  collection.forEach( element => {
+    const li = document.createElement('li');
+    li.textContent = element;
+    divContainerReults.appendChild(li)
+  })
+}
 
 //Llamado a endpoint de API
 function makeCallAPI(url) {
-  fetch(url).then(response => response.json()).then(resultado => (objRequest.res = resultado));
+  fetch(url)
+    .then(response => response.json())
+    .then(resultado => objRequest.res = resultado)
+    .catch(error => console.log(error));
 }
 
 function getURL(id = "all", value = "") {
@@ -199,7 +222,7 @@ function fetchBorders(fronteras, country) {
 }
 
 function paintHTML(res) {
-  clearResult();
+  clearResult(result);
   res.forEach(country => {
     const {
       capital,
@@ -240,8 +263,8 @@ function paintHTML(res) {
 
 }
 
-function clearResult() {
-  while (result.firstChild) {
-    result.removeChild(result.firstChild);
+function clearResult(target) {
+  while (target.firstChild) {
+    target.removeChild(target.firstChild);
   }
 }
