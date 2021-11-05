@@ -83,18 +83,29 @@ function searchCountry(e){
     resultList.classList.add("block");
   } else {
     resultList.classList.remove("block");
-    resultList.classList.add("hidden");
+    resultList.classList.add("hidden");    
   }
 }
 
 function drawResults(collection){
   const divContainerReults = document.querySelector('#resultList');
-  clearResult(divContainerReults);
-  collection.forEach( element => {
-    const li = document.createElement('li');
-    li.textContent = element;
-    divContainerReults.appendChild(li)
-  })
+  const li = document.createElement('li');
+  li.classList.add("py-4", "pl-2");
+  
+  console.log(collection)
+  
+  if(collection.length === 0) {
+    li.textContent = "Sin resultados";
+    divContainerReults.appendChild(li);
+  } else{
+    clearResult(divContainerReults);
+    collection.forEach( element => {
+      //element.replace("_", " ");
+      li.textContent = element;
+      li.classList.add("hover:bg-purple-500", "hover:text-white");
+      divContainerReults.appendChild(li)
+    })
+  }  
 }
 
 //Llamado a endpoint de API
