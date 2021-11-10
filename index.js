@@ -62,7 +62,16 @@ document.addEventListener("DOMContentLoaded", e => {
   document.addEventListener("click", e => {
     if (e.target.id === "btnSearch") {} 
     else if (e.target.id === "btnSearchInd") {
-        
+        objRequest.req = getURL("name", inpSearch.value);
+        makeCallAPI(objRequest.req)
+
+        setTimeout( () => {
+          const response = objRequest.res;
+          getBorders(response);
+        }, 1000);
+    } else if(e.target.classList.contains("py-4")){
+      inpSearch.value = e.target.textContent;
+      resultList.classList.toggle("hidden");
     }
   });
 
@@ -72,7 +81,7 @@ document.addEventListener("DOMContentLoaded", e => {
 function searchCountry(e){
   let countryTerm = e.target.value;
   if(countryTerm){
-    countryTerm.replace(" ", "_");
+    countryTerm.replace(" ", "_");  
 
     const regExp = new RegExp(`^${countryTerm}`, "i");
     const result = [...Object.keys(dictCountries)].filter(country => regExp.test(country))
@@ -89,21 +98,24 @@ function searchCountry(e){
 
 function drawResults(collection){
   const divContainerReults = document.querySelector('#resultList');
-  const li = document.createElement('li');
-  li.classList.add("py-4", "pl-2");
   
-  console.log(collection)
+  clearResult(divContainerReults);
   
   if(collection.length === 0) {
+    const li = document.createElement('li');
     li.textContent = "Sin resultados";
+    li.classList.add("py-5", "pl-2", "text-center")
+    divContainerReults.classList.replace("h-72", "h-auto");
     divContainerReults.appendChild(li);
   } else{
-    clearResult(divContainerReults);
-    collection.forEach( element => {
-      //element.replace("_", " ");
+    divContainerReults.classList.replace("h-auto", "h-72");
+    collection.forEach( element => {      
+      element = element.replace(/_/g, " ");
+      const li = document.createElement('li');
+      li.classList.add("py-4", "pl-2");
       li.textContent = element;
       li.classList.add("hover:bg-purple-500", "hover:text-white");
-      divContainerReults.appendChild(li)
+      divContainerReults.appendChild(li);
     })
   }  
 }
@@ -213,7 +225,7 @@ function getBorders(obj) {
 }
 
 function fetchBorders(fronteras, country) {  
-  console.log({fronteras, country})
+  //console.log({fronteras, country})
 
   fronteras = fronteras.map(border => fetch(`https:restcountries.com/v2/alpha/${border}`));
 
