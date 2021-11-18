@@ -1,23 +1,19 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="index.css" />
-    <!--<link rel="stylesheet" href="styles.css">-->
-    <title>Do U Wanna Know?</title>
-  </head>
-  <body class="bg-gray-200">
-    <nav class="bg-green-500 pb-3 pt-1 flex flex-row">
-      <form
-        class="w-2/5 mt-3 flex justify-between ml-5 bg-transparent pr-2"
-        id="formSearchInd"
-      >
-        <input
-          id="searchSection"
-          placeholder="Buscar..."
-          class="
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="index.css" />
+  <!--<link rel="stylesheet" href="styles.css">-->
+  <title>Do U Wanna Know?</title>
+</head>
+
+<body class="bg-gray-200 relative">
+  <nav class="bg-green-500 pb-3 pt-1 flex flex-row z-10">
+    <form class="w-2/5 mt-3 flex justify-between ml-5 bg-transparent pr-2" id="formSearchInd">
+      <input id="searchSection" placeholder="Buscar..." class="
             h-12
             w-full
             text-2xl
@@ -26,56 +22,39 @@
             focus:outline-none
             text-white
             placeholder-white placeholder-opacity-50
-          "
-          autocomplete="off"
-          data-target=""
-        />
-        <button type="submit" class="align-top">
-          <span
-            ><i class="fas fa-search fa-2x text-white" id="btnSearchInd"></i
-          ></span>
-        </button>
-      </form>
+          " autocomplete="off" data-target="" />
+      <button type="submit" class="align-top">
+        <span><i class="fas fa-search fa-2x text-white" id="btnSearchInd"></i></span>
+      </button>
+    </form>
 
-      <form
-        class="w-3/5 flex justify-evenly h-10 my-auto content-center mt-3"
-        id="formSearchParams"
-      >
-        <select id="selFilterData" class="bg-white rounded-2xl pl-2 w-1/4">
-          <option value="" disabled selected>Buscar por</option>
-          <optgroup label="Idioma" id="lang"></optgroup>
-          <optgroup label="Continente" id="continent"></optgroup>
-          <optgroup label="Moneda" id="currency"></optgroup>
-        </select>
-        <select id="selFilterOrder" class="bg-white rounded-2xl pl-2 w-1/4">
-          <option value="" disabled selected>Orden de busqueda</option>
-          <option value="asc">Ascendente</option>
-          <option value="desc">Descendente</option>
-        </select>
-        <select id="selFilterResults" class="bg-white rounded-2xl pl-2 w-1/4">
-          <option value="" disabled selected>Número de resultados</option>
-          <option value="5">Top 5</option>
-          <option value="10">Top 10</option>
-          <option value="20">Top 20</option>
-          <option value="50">Top 50</option>
-          <option value="250">Todos</option>
-        </select>
-        <input
-          type="submit"
-          value="Buscar"
-          class="rounded w-1/6"
-          id="btnSearch"
-        />
-      </form>
-    </nav>
-    <ul class="bg-white ml-2 w-2/5 hidden h-72 overflow-auto" id="resultList"></ul>
-    <main id="sectionResult" class="flex flex-wrap flex-start"></main>
+    <form class="w-3/5 flex justify-evenly h-10 my-auto content-center mt-3" id="formSearchParams">
+      <select id="selFilterData" class="bg-white rounded-2xl pl-2 w-1/4">
+        <option value="" disabled selected>Buscar por</option>
+        <optgroup label="Idioma" id="lang"></optgroup>
+        <optgroup label="Continente" id="continent"></optgroup>
+        <optgroup label="Moneda" id="currency"></optgroup>
+      </select>
+      <select id="selFilterOrder" class="bg-white rounded-2xl pl-2 w-1/4">
+        <option value="" disabled selected>Orden de busqueda</option>
+        <option value="asc">Ascendente</option>
+        <option value="desc">Descendente</option>
+      </select>
+      <select id="selFilterResults" class="bg-white rounded-2xl pl-2 w-1/4">
+        <option value="" disabled selected>Número de resultados</option>
+        <option value="5">Top 5</option>
+        <option value="10">Top 10</option>
+        <option value="20">Top 20</option>
+        <option value="50">Top 50</option>
+        <option value="250">Todos</option>
+      </select>
+      <input type="submit" value="Buscar" class="rounded w-1/6" id="btnSearch" />
+    </form>
+  </nav>
+  <ul class="bg-white ml-2 w-2/5 hidden h-72 overflow-auto absolute z-20" id="resultList"></ul>
+  <main id="sectionResult" class="flex flex-wrap flex-start"></main>
 
-    <script
-      src="https://kit.fontawesome.com/7f3d479cce.js"
-      crossorigin="anonymous"
-    ></script>
-    <script src="index.js" type="module"></script>
-    <script src="effects.js"></script>
-  </body>
-
+  <script src="https://kit.fontawesome.com/7f3d479cce.js" crossorigin="anonymous"></script>
+  <script src="index.js" type="module"></script>
+  <script src="effects.js"></script>
+</body>

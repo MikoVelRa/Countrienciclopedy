@@ -62,13 +62,16 @@ document.addEventListener("DOMContentLoaded", e => {
   document.addEventListener("click", e => {
     if (e.target.id === "btnSearch") {} 
     else if (e.target.id === "btnSearchInd") {
-        objRequest.req = getURL("name", inpSearch.value);
+      const pais = dictCountries[inpSearch.value];
+        objRequest.req = getURL("name", pais);
         makeCallAPI(objRequest.req)
 
         setTimeout( () => {
           const response = objRequest.res;
           getBorders(response);
+          inpSearch.value = "";
         }, 1000);
+
     } else if(e.target.classList.contains("py-4")){
       inpSearch.value = e.target.textContent;
       resultList.classList.toggle("hidden");
@@ -98,6 +101,12 @@ function searchCountry(e){
 
 function drawResults(collection){
   const divContainerReults = document.querySelector('#resultList');
+  const buttonClose = document.createElement('li'),
+      btnClose = document.createElement('button');  
+  
+  btnClose.textContent = 'X';
+
+  buttonClose.appendChild(btnClose)
   
   clearResult(divContainerReults);
   
@@ -117,6 +126,8 @@ function drawResults(collection){
       li.classList.add("hover:bg-purple-500", "hover:text-white");
       divContainerReults.appendChild(li);
     })
+
+    divContainerReults.appendChild(buttonClose);
   }  
 }
 
@@ -213,6 +224,7 @@ function storeData(selector, arrElements) {
 }
 
 function getBorders(obj) {
+  console.log(obj)
   resul = [];
   obj.forEach(result => {    
     let {borders} = result;
