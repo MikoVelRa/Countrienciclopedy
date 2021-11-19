@@ -7,6 +7,7 @@ const {
   optGroupIdioma,
   optGroupContinente,
   optGroupCurrencies,
+  buttonSearch,
   selectOrder,
   selectResults,
   inpSearch,
@@ -43,6 +44,7 @@ document.addEventListener("DOMContentLoaded", e => {
     } else {
       objRequest.order = selectOrder.value;
       objRequest.results = parseInt(selectResults.value);
+      console.log(objRequest)
     }
   });
 
@@ -62,7 +64,7 @@ document.addEventListener("DOMContentLoaded", e => {
   document.addEventListener("click", e => {
     if (e.target.id === "btnSearch") {} 
     else if (e.target.id === "btnSearchInd") {
-      const pais = dictCountries[inpSearch.value];
+      const pais = dictCountries[inpSearch.value.trim()];
         objRequest.req = getURL("name", pais);
         makeCallAPI(objRequest.req)
 
@@ -75,13 +77,33 @@ document.addEventListener("DOMContentLoaded", e => {
     } else if(e.target.classList.contains("py-4")){
       inpSearch.value = e.target.textContent;
       resultList.classList.toggle("hidden");
+
+      document.querySelector("#btnClose").id = "btnSearchInd";
+
+      buttonSearch.classList.remove("fa-times");
+      buttonSearch.classList.add("fa-search");
+    } else if(e.target.id === "btnClose"){
+        document.querySelector("#btnClose").id = "btnSearchInd";
+        
+        resultList.classList.remove("block");
+        resultList.classList.add("hidden");
+
+        buttonSearch.classList.remove("fa-times");
+        buttonSearch.classList.add("fa-search");
     }
   });
 
-  document.addEventListener("input", searchCountry)
+  document.addEventListener("input", e => {
+    if(e.target.id === "searchSection"){
+      searchCountry(e);
+    } else{
+      console.log("a")
+    }
+  })
 });
 
 function searchCountry(e){
+  
   let countryTerm = e.target.value;
   if(countryTerm){
     countryTerm.replace(" ", "_");  
@@ -90,10 +112,18 @@ function searchCountry(e){
     const result = [...Object.keys(dictCountries)].filter(country => regExp.test(country))
     
     drawResults(result)
+    
+    buttonSearch.classList.remove("fa-search");
+    buttonSearch.classList.add("fa-times");
+
+    buttonSearch.id = "btnClose"
 
     resultList.classList.remove("hidden");
     resultList.classList.add("block");
   } else {
+    buttonSearch.classList.remove("fa-times");
+    buttonSearch.classList.add("fa-search");
+
     resultList.classList.remove("block");
     resultList.classList.add("hidden");    
   }
@@ -101,13 +131,7 @@ function searchCountry(e){
 
 function drawResults(collection){
   const divContainerReults = document.querySelector('#resultList');
-  const buttonClose = document.createElement('li'),
-      btnClose = document.createElement('button');  
-  
-  btnClose.textContent = 'X';
-
-  buttonClose.appendChild(btnClose)
-  
+      
   clearResult(divContainerReults);
   
   if(collection.length === 0) {
@@ -127,7 +151,6 @@ function drawResults(collection){
       divContainerReults.appendChild(li);
     })
 
-    divContainerReults.appendChild(buttonClose);
   }  
 }
 

@@ -3,6 +3,7 @@ const result = document.querySelector("#sectionResult");
 const optGroupIdioma = document.querySelector("#selFilterData #lang");
 const optGroupContinente = document.querySelector("#selFilterData #continent");
 const optGroupCurrencies = document.querySelector("#selFilterData #currency");
+const buttonSearch = document.querySelector("#btnSearchInd");
 
 const selectOrder = document.querySelector("#selFilterOrder");
 const selectResults = document.querySelector("#selFilterResults");
@@ -18,6 +19,7 @@ const vars = {
     result,
     optGroupIdioma,
     optGroupContinente,
+    buttonSearch,
     optGroupCurrencies,
     selectOrder,
     selectResults,
